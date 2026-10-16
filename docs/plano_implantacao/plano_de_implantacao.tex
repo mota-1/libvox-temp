@@ -1,0 +1,217 @@
+% Plano de implantação do LibVox
+% Compilar com:  pdflatex plano_de_implantacao.tex
+%
+% Sem babel: esta instalação não traz o portuguese.ldf, e aplicar padrões de
+% hifenização ingleses ao português quebra palavra no lugar errado. Por isso a
+% hifenização fica desligada, e o texto justificado se apoia na expansão do
+% microtype para não abrir vãos entre palavras.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{tgpagella}
+\usepackage[scaled=0.92]{helvet}
+\usepackage[none]{hyphenat}
+
+\usepackage[a4paper,top=3cm,bottom=3cm,left=3.2cm,right=3.2cm]{geometry}
+% Expansão e protrusão fazem o trabalho que a hifenização faria: sem padrões de
+% português instalados, é o que mantém o texto justificado sem rios de espaço.
+\usepackage[expansion=alltext,protrusion=true,final]{microtype}
+\usepackage[parfill]{parskip}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+% Sem babel, \today sai em inglês e o espaçamento após ponto final segue a
+% convenção anglófona de espaço duplo. Os dois são corrigidos aqui.
+\frenchspacing
+\emergencystretch=2em
+\newcommand{\mesbr}{\ifcase\month\or janeiro\or fevereiro\or março\or abril\or
+  maio\or junho\or julho\or agosto\or setembro\or outubro\or novembro\or
+  dezembro\fi}
+\newcommand{\databr}{\number\day\ de \mesbr\ de \number\year}
+
+\definecolor{marcia}{HTML}{CF0D4D}
+\definecolor{tinta}{HTML}{1B1A21}
+\definecolor{suave}{HTML}{55525F}
+
+\color{tinta}
+
+\titleformat{\section}{\sffamily\large\bfseries\color{tinta}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{1.6\baselineskip}{0.5\baselineskip}
+
+\setlist[itemize]{leftmargin=1.4em,itemsep=0.45\baselineskip,topsep=0.4\baselineskip}
+\setlist[enumerate]{leftmargin=1.9em,itemsep=0.35\baselineskip,topsep=0.4\baselineskip}
+
+% O parskip está com a opção `parfill`, que fixa \parfillskip=30pt plus 1fil:
+% todo parágrafo tem de sobrar 30pt na última linha. Um parágrafo cujo conteúdo é
+% uma caixa da largura exata da linha (a régua do título, a caixa do pedido)
+% estoura por exatamente esses 30pt. Restaurar o valor padrão do LaTeX resolve, e
+% precisa ser feito DENTRO do grupo que contém o \par, senão não se aplica.
+\newcommand{\caixacheia}{\parfillskip=0pt plus 1fil\relax}
+
+% Rótulo de etapa. As etapas deixaram de ser \section: elas são passos de uma
+% só seção, e quatro títulos de seção para quatro passos davam ao que falta mais
+% peso na página do que ao que já funciona.
+\newcommand{\etapa}[1]{%
+  \par\vspace{0.45\baselineskip}%
+  \noindent{\sffamily\bfseries #1}\par\vspace{0.1\baselineskip}}
+
+% Caixa do pedido. Sem tcolorbox, que não está no preâmbulo e não vale uma
+% dependência nova: \fcolorbox com uma minipage faz o mesmo. A subtração de
+% \fboxsep e \fboxrule é o que impede a caixa de passar da margem.
+\newcommand{\pedido}[1]{%
+  \par\vspace{0.3\baselineskip}%
+  {\caixacheia
+  \noindent\fcolorbox{marcia}{marcia!5}{%
+    \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}%
+      \vspace{0.2\baselineskip}#1\vspace{0.2\baselineskip}%
+    \end{minipage}}\par}%
+  \vspace{0.3\baselineskip}}
+
+\newcommand{\titulo}{%
+  \noindent{\sffamily\LARGE\bfseries Plano de implantação do LibVox}\par
+  \vspace{0.35em}
+  {\caixacheia\color{marcia}\rule{\linewidth}{1.2pt}\par}
+  \vspace{0.4em}
+  {\sffamily\small\color{suave} IMPA Tech \quad\textbullet\quad \databr}\par
+  \vspace{1.6\baselineskip}}
+
+\begin{document}
+\titulo
+
+O LibVox é o nome de um projeto de Iniciação Científica (IC) do IMPA Tech. Nele, implementamos uma assistente conversacional baseada em linguagem natural para catálogos de bibliotecas, chamada \textbf{MARC.IA}. Com ela, o leitor pode fazer perguntas como: \emph{``vocês têm alguma coisa sobre xadrez para iniciantes?''}, e recebe como resposta os títulos disponíveis no catálogo, com número de exemplares e localização.
+
+\section{O que já implementamos?}
+
+O LibVox já responde hoje, de ponta a ponta: a pergunta escrita em linguagem
+natural é traduzida em consultas ao acervo e volta como uma resposta com título,
+autor, quantidade de exemplares e localização.
+
+\begin{itemize}
+  % PREENCHER: quantas bibliotecas estão configuradas, quantos registros somam os
+  % acervos carregados, e desde quando o ambiente de testes está no ar. Estes três
+  % números valem mais, nesta seção, do que qualquer adjetivo.
+  \item Há um ambiente de testes no ar, com acervos reais e uma página
+        de demonstração.
+  \item Uma única instalação pode atender várias bibliotecas ao mesmo tempo.
+  \item O código é aberto, sob licença AGPL-3.0, com o copyright do IMPA Tech.
+  \item Alunos do IMPA Tech já trabalham no projeto, pegando tarefas do
+        desenvolvimento e planejando a escrita de artigos científicos. 
+\end{itemize}
+
+\section{Por que isso interessa ao IMPA Tech}
+
+Nosso objetivo é manter o LibVox como projeto permanente do IMPA Tech.
+
+\begin{enumerate}
+  \item \textbf{Ensino e extensão no mesmo trabalho.} Alunos escrevem código
+        que vai para produção em uma biblioteca real.
+  \item \textbf{Alcance} Sendo código aberto, qualquer
+        instituição pode subir a própria instância, o que leva o nome do 
+        IMPA Tech para bibliotecas de todo o Brasil.
+  \item \textbf{Produção científica.} Há uma agenda de pesquisa com diversas linhas mapeadas.
+\end{enumerate}
+
+\section{O que falta para entrar em produção}
+
+\etapa{Etapa 1. Ambiente de testes}
+\begin{itemize}
+  \item Configurar uma máquina dentro do datacenter do IMPA para prover o modelo
+        de linguagem que interpreta as perguntas e indica quais consultas o
+        LibVox deve fazer (Máquina com GPU). Esse recurso será utilizado apenas para atender as demandas da nossa biblioteca.
+        {\color{suave}(Analisando com o Daniel e Lucas)}
+  \item Criar uma instância do Koha da nossa biblioteca dedicada a testes, com
+        cópia do acervo.
+        {\color{suave}(Analisando com Sérgio Piloto)}
+  % A VM é externa porque o datacenter do IMPA não tem como oferecer esse recurso
+  % agora. Redigido sem apontar o datacenter como obstáculo: a frase afirma o que
+  % resolve e deixa a porta aberta para internalizar depois.
+  \item Contratar uma máquina virtual para hospedar os componentes do LibVox: o
+        núcleo da assistente, o portal de administração e o banco de dados. O
+        datacenter do IMPA pode assumir esse papel mais adiante; para começar,
+        uma máquina contratada resolve.
+        {\color{suave}(Custo Anual \$100 dólares)}
+\end{itemize}
+
+% Etapas 2, 3 e 4 têm uma ação cada. Lista de um item só gasta espaço vertical
+% e não organiza nada: vão como parágrafo.
+\etapa{Etapa 2. Acesso ao catálogo}
+Criar um usuário de API no Koha com \textbf{permissão apenas de consulta ao
+catálogo}.
+
+\etapa{Etapa 3. Alteração no catálogo}
+Acrescentar uma linha ao template da tela de consulta ao acervo, que faz aparecer
+um botão no canto da página.
+
+\etapa{Etapa 4. Política de uso}
+Redigir o texto apresentado ao leitor ao clicar no botão, antes da primeira
+pergunta. Ele precisa informar o que é a ferramenta, que o acesso é anônimo, que
+as perguntas e respostas são guardadas, com quais finalidades, e que o leitor não
+deve escrever dados pessoais na conversa.
+
+\section{Mapeamento de Riscos}
+
+\begin{itemize}
+  \item \textbf{O acesso ao catálogo é somente de leitura.} É o próprio Koha que
+        recusa qualquer outra operação. Não há acesso a dados de usuários,
+        empréstimos, reservas ou multas, nem qualquer função de edição.
+  \item \textbf{O sistema guarda apenas a pergunta e a resposta.} O desenho do
+        banco de dados é o que garante isso: ele simplesmente não tem campo para
+        nome, e-mail, telefone, etc.
+  \item \textbf{As buscas não chegam ao servidor da biblioteca.} O LibVox
+        trabalha sobre uma cópia do acervo, que mantém atualizada. A única
+        consulta em tempo real é a de disponibilidade de exemplar.
+  \item \textbf{A alteração no catálogo é uma linha, e é reversível.} É a única
+        modificação no Koha: nenhum registro, configuração ou comportamento da
+        busca é alterado.
+\end{itemize}
+
+\section{Como funciona o LibVox e tratamento de alucinações}
+
+Duas características do desenho mantêm a resposta ancorada no acervo, e são elas
+que reduzem o risco de alucinação. O modelo pode variar de uma instância para
+outra: na nossa, usaremos o Qwen, que é um modelo aberto.
+
+\begin{enumerate}
+  \item \textbf{Todo título vem do catálogo.} O modelo de linguagem escreve a
+        resposta para o usuário utilizando as informações do acervo da
+        biblioteca. Portanto, ele não inventa títulos de livros ou informações
+        que não estejam no catálogo.
+
+  \item \textbf{A resposta diz o que foi buscado.} A assistente informa qual
+        termo pesquisou no catálogo. Com isso o leitor pode perceber quando a
+        busca não correspondeu ao que ele pediu, e refazer a pergunta com outras
+        palavras.
+\end{enumerate}
+
+Além da prevenção, há acompanhamento: as conversas ficam gravadas e serão lidas
+periodicamente para verificar a qualidade das respostas. Servem a dois fins,
+declarados desde já: melhorar a ferramenta e sustentar publicações futuras.
+\textbf{O registro é integralmente anônimo}, pela mesma razão da seção anterior:
+não existe no sistema onde guardar dado que identifique quem perguntou.
+
+\section{Manutenção depois de aberta ao público}
+
+Esta primeira instância atende apenas os usuários da biblioteca do IMPA, e por
+isso a manutenção é feita pela própria equipe. São duas tarefas: reiniciar algum
+serviço caso ele trave, e atualizar o sistema quando os alunos produzirem
+novidade.
+
+
+\section{O que pedimos}
+
+\pedido{%
+\begin{enumerate}[leftmargin=1.6em,topsep=0pt,itemsep=0.3\baselineskip]
+  \item \textbf{A máquina para o modelo de linguagem, no datacenter, e a
+        instância do Koha de testes.} São os dois recursos internos que a Etapa 1
+        depende.
+  \item \textbf{Uma máquina virtual externa para hospedar os componentes do
+        LibVox.} É onde a assistente, o portal e o banco de dados rodam. O
+        datacenter pode assumir esse papel mais adiante; para entrar em
+        produção agora, uma máquina contratada resolve.
+\end{enumerate}}
+
+\end{document}
